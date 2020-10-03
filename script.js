@@ -30,7 +30,7 @@ for(i=0; i < 24; i++){
         newDisplaySlot.attr("data-target","#viewModal");
     var newCheckBox=$("<button>");
         newCheckBox.html("&#9745;");
-        newCheckBox.attr("class", "list-group-item list-group-item-action list-group-item-secondary col-2  round-right submit save");
+        newCheckBox.attr("class", "list-group-item list-group-item-action list-group-item-secondary col-2  round-right save");
 
     newRowForm.append(newTimeSlot);
     newRowForm.append(newInputSlot);
@@ -51,13 +51,13 @@ var formBoxesAll=document.querySelectorAll(".formRow");
 
 
 
-for(i=0; i< formBoxesAll.length; i++){
-formBoxesAll[i].addEventListener("submit",function(event){
-    if(this.children[1].value != ""){
-    todo[this.dataset.time].push(this.children[1].value);
-    saveTodoLocal();}
+// for(i=0; i< formBoxesAll.length; i++){
+// formBoxesAll[i].addEventListener("submit",function(event){
+//     if(this.children[1].value != ""){
+//     todo[this.dataset.time].push(this.children[1].value);
+//     saveTodoLocal();}
 
-});}
+// });}
 
 function saveTodoLocal(){
     localStorage.setItem("todo",JSON.stringify(todo));
@@ -80,8 +80,27 @@ var inputBoxesAll=document.querySelectorAll(".typing");
 for(i=0; i< formBoxesAll.length; i++){
 inputBoxesAll[i].addEventListener("keydown", function(event){
     if(event.keyCode==13){
-        this.parentElement.submit();
+        if(this.value != ""){
+            todo[this.parentElement.dataset.time].push(this.value);
+            saveTodoLocal();
+            location.reload();
+        }
+  
     }
+});
+}
+
+var saveBoxesAll=document.querySelectorAll(".save");
+
+for(i=0; i< saveBoxesAll.length; i++){
+saveBoxesAll[i].addEventListener("click", function(event){
+    event.preventDefault();
+        if(this.parentElement.children[1].value != ""){
+            todo[this.parentElement.dataset.time].push(this.parentElement.children[1].value);
+            saveTodoLocal();
+            location.reload();
+        }
+
 });
 }
 
@@ -91,7 +110,6 @@ var lastClickedTime=0;
 for(i=0; i< viewBoxesAll.length; i++){
     viewBoxesAll[i].addEventListener("click", function(event){
         event.preventDefault();
-
         lastClickedTime=this.parentElement.dataset.time;
         refreshModal();
     });}
@@ -142,5 +160,30 @@ function refreshModal(){
     });
 
     function refreshPage() {
-        
+        var currentTime=moment().startOf('day').fromNow();
+        currentTime=Number(currentTime.slice(0,2));
+       
+     
+
+        for(i=0; i< 24; i++){
+            var timeSlot=formBoxesAll[i].dataset.time;
+            if(timeSlot < currentTime){
+                inputBoxesAll[i].setAttribute("class", "list-group-item list-group-item-action list-group-item-danger col-6  typing");
+            } else if(timeSlot==currentTime){
+                inputBoxesAll[i].setAttribute("class", "list-group-item list-group-item-action list-group-item-light col-6  typing");
+            }
+            if(todo[i].length != 0){
+                viewBoxesAll[i].setAttribute("class","list-group-item list-group-item-action list-group-item-warning col-2  view-todo");
+            }
+        }
+        for(i=0; i< 24; i++){
+            if(todo[i].length > 0){
+            inputBoxesAll[i].placeholder=todo[i][todo[i].length-1];
+            }
+        }
+
+
     }
+
+    refreshPage();
+
