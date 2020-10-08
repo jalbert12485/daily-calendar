@@ -14,3 +14,6 @@ vii)  Within this modal, the user can use the complete buttons to individually r
 viii) The total number of "to dos" for an hour will be shown on the view button.
 ix) If there is anything to do in a given hour, the view button will appear yellow.
 x) The user can clear all "to dos" by clicking the complete all/ new day button at the top of the page.
+
+The deployed webpage is available [here](https://jalbert12485.github.io/daily-calendar/), and a screenshot is below.
+![Screenshot](Screenshot.png)
